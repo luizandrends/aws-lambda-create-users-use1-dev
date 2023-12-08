@@ -31,7 +31,7 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - name: Go Get
         run: |
-          cd src/main && go get main.go
+          cd src && go get
       - name: Build Golang Binary
         run: |
           cd src && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o main main.go && zip lambda_code.zip main
