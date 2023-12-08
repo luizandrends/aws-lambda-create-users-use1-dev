@@ -1,0 +1,28 @@
+name: Golang Lambda CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**/*.go"
+jobs:
+  golang-lambda-cd:
+    runs-on: ubuntu-latest
+  permissions:
+    id-token: write
+    contents: read
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Assuming AWS Role
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE }}
+        aws-region: us-east-1
+    - name: Deploy Package To Lambda Function
+      uses: appleboy/lambda-action@v0.1.9
+      with:
+        s3_bucket: aws-s3-lambda-artifacts-use1-dev-dkkpwua
+        s3_key: artifacts/lambda/${{ github.event.repository.name }}/
+        function_name: ${{ github.event.repository.name }}
