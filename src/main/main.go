@@ -1,34 +1,31 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"encoding/json"
-	"log"
-	"net/http"
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
 )
 
-func main() {
-	handler := http.HandlerFunc(handleRequest)
-	http.Handle("/users/create", handler)
-	http.ListenAndServe(":8080", nil)
-}
+func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	// Your "Hello World" logic here
+	message := "Hello, World!"
 
-func handleRequest(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusCreated)
-	w.Header().Set("Content-Type", "application/json")
+	fmt.Println(request)
 
-	resp := make(map([string]string))
-	resp["isBase64Encoded"] = false
-	resp["statusCode"] = 200
-	resp["statusDescription"] = "200 OK"
-	resp["body"] = "Hello World"
-
-	jsonResp, err := json.Marshal(resp)
-	if err != nil {
-		log.Fatalf("Error happened in JSON marshal. Err: %s", err)
+	// Sample Load Balancer Response Document
+	response := events.APIGatewayProxyResponse{
+		IsBase64Encoded: false,
+		StatusCode:      200,
+		Headers: map[string]string{
+			"Content-Type": "application/json",
+		},
+		Body: message,
 	}
-	w.Write(jsonResp)
-	return
+
+	return response, nil
 }
 
-
+func main() {
+	lambda.Start(handleRequest)
+}
