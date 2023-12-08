@@ -12,6 +12,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 
 	fmt.Println(request)
 	fmt.Println("TESTE LUIZ ANDRE - 1")
+	fmt.Println("TESTE LUIZ ANDRE - 2")
 
 	response := events.APIGatewayProxyResponse{
 		IsBase64Encoded: false,
