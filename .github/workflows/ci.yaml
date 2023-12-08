@@ -25,9 +25,9 @@ jobs:
         uses: actions/setup-go@v1
         with:
           go-version: ${{ matrix.go-version }}
-      - name: Go Get
+      - name: Dependency Install
         run: |
-          cd src && go get
+          cd src/main && go get
       - name: Build Golang Binary
         run: |
           cd src && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o main main.go && zip lambda_code.zip main
