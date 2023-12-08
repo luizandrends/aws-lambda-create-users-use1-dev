@@ -12,6 +12,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	message := "Hello, World!"
 
 	fmt.Println(request)
+	fmt.Println("TESTE LUIZ ANDRE - 1")
 
 	// Sample Load Balancer Response Document
 	response := events.APIGatewayProxyResponse{
