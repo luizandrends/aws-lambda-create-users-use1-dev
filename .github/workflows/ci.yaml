@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: [1.23.x]
+        go-version: [1.20.x]
     permissions:
       id-token: write
       contents: read
@@ -21,10 +21,6 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           aws-region: us-east-1
-      # - name: Setup SSH Key
-      #   uses: webfactory/ssh-agent@v0.8.0
-      #   with:
-      #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Golang Install
         uses: actions/setup-go@v1
         with:
