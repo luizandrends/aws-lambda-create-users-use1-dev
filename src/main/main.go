@@ -8,7 +8,6 @@ import (
 )
 
 func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	// Your "Hello World" logic here
 	message := "Hello, World!"
 
 	fmt.Println(request)
