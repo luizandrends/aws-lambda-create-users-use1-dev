@@ -14,7 +14,6 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	fmt.Println(request)
 	fmt.Println("TESTE LUIZ ANDRE - 1")
 
-	// Sample Load Balancer Response Document
 	response := events.APIGatewayProxyResponse{
 		IsBase64Encoded: false,
 		StatusCode:      200,
