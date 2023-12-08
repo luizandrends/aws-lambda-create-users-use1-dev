@@ -30,4 +30,4 @@ jobs:
           cd src/main && go get && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build && zip ../../lambda_code.zip main
       - name: s3 Lambda Artifact Creation
         run: |
-          aws s3 cp ./lambda_code.zip s3://aws-lambda-artifact-function-use1-dev/artifacts/lambda/${{ github.event.repository.name }}/
+          aws s3 cp ./lambda_code.zip s3://aws-s3-lambda-artifacts-use1-dev-dkkpwua/artifacts/lambda/${{ github.event.repository.name }}/
