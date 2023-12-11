@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "**/*.go"
+      - '**/*.ts'
 jobs:
   golang-lambda-cd:
     runs-on: ubuntu-latest
