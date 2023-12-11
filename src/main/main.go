@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"log"
+	"fmt"
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -32,7 +32,7 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 	event := MyEvent{}
 	err := json.Unmarshal([]byte(request.Body), &event)
 	if err != nil {
-		log.Printf("PutItemInput: %+v\n", err)
+		fmt.Print("Error: ", err)
 		return events.ALBTargetGroupResponse{
 			IsBase64Encoded: false,
 			StatusCode:      500,
@@ -40,6 +40,8 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 			Body:            "Failed to create event body",
 		}, nil
 	}
+
+	fmt.Print("Check MyEvent")
 
 	sess := session.Must(session.NewSession(&aws.Config{
 		Region: aws.String("us-east-1"),
@@ -76,11 +78,12 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 		ReturnValues: aws.String("ALL_NEW"),
 	}
 
-	log.Printf("PutItemInput: %+v\n", input)
+	fmt.Print("Input: ", input)
 
 	output, err := svc.PutItem(input)
 	if err != nil {
-		log.Printf("PutItemInput: %+v\n", err)
+		fmt.Print("Error: ", err)
+
 		return events.ALBTargetGroupResponse{
 			IsBase64Encoded: false,
 			StatusCode:      500,
@@ -97,11 +100,13 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 		UpdatedAt: *output.Attributes["UpdatedAt"].S,
 	}
 
-	log.Printf("Testando response data!!!!!!!!")
+	fmt.Print("Check ResponseData")
 
 	responseBody, err := json.Marshal(responseData)
 	if err != nil {
-		log.Printf("PutItemInput: %+v\n", err)
+
+		fmt.Print("Error: ", err)
+
 		return events.ALBTargetGroupResponse{
 			IsBase64Encoded: false,
 			StatusCode:      500,
@@ -110,7 +115,7 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 		}, nil
 	}
 
-	log.Printf("Testando response body!!!!!!!!")
+	fmt.Print("Check ResponseBody")
 
 	return events.ALBTargetGroupResponse{
 		IsBase64Encoded: false,
