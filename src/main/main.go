@@ -78,12 +78,11 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 		ReturnValues: aws.String("ALL_NEW"),
 	}
 
-	fmt.Print("Input: ", input)
-
 	output, err := svc.PutItem(input)
-	if err != nil {
-		fmt.Print("Error: ", err)
 
+	fmt.Print("Check PutItem", output)
+
+	if err != nil {
 		return events.ALBTargetGroupResponse{
 			IsBase64Encoded: false,
 			StatusCode:      500,
