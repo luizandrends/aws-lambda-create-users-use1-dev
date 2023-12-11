@@ -33,7 +33,12 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
       },
     })
 
-    const response = await docClient.send(command)
+    const response = await Promise.race([
+      docClient.send(command),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Timeout')), 5000),
+      ),
+    ])
 
     return {
       isBase64Encoded: false,
