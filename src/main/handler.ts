@@ -1,5 +1,5 @@
 import { ALBEvent, ALBResult } from 'aws-lambda'
-import AWS from 'aws-sdk'
+import { PutItemCommand, DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { v4 as uuidv4 } from 'uuid'
 import { hash } from 'bcryptjs'
 
@@ -10,8 +10,7 @@ type LoadBalancerRequestEventInterface = {
 }
 
 export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
-  AWS.config.update({ region: 'us-east-1' })
-  const dynamoDbService = new AWS.DynamoDB({ apiVersion: '2012-08-10' })
+  const dynamoDbService = new DynamoDBClient({ region: 'us-east-1' })
 
   const requestBody: LoadBalancerRequestEventInterface = JSON.parse(
     event.body as string,
@@ -29,7 +28,7 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
     },
   }
   try {
-    const user = await dynamoDbService.putItem(params)
+    const user = await dynamoDbService.send(new PutItemCommand(params))
 
     return {
       isBase64Encoded: false,
