@@ -10,7 +10,7 @@ type LoadBalancerRequestEventInterface = {
   password: string
 }
 
-const client = new DynamoDBClient({ region: 'us-east-1' })
+const client = new DynamoDBClient()
 const docClient = DynamoDBDocumentClient.from(client)
 
 export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
