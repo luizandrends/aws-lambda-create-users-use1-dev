@@ -1,6 +1,5 @@
 import { ALBEvent, ALBResult } from 'aws-lambda'
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { PutCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb'
+import AWS from 'aws-sdk'
 import { hash } from 'bcryptjs'
 import { v4 as uuid } from 'uuid'
 
@@ -10,8 +9,10 @@ type LoadBalancerRequestEventInterface = {
   password: string
 }
 
-const client = new DynamoDBClient()
-const docClient = DynamoDBDocumentClient.from(client)
+const ddb = new AWS.DynamoDB({
+  apiVersion: '2012-08-10',
+  region: 'us-east-1',
+})
 
 export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
   const requestBody: LoadBalancerRequestEventInterface = JSON.parse(
@@ -21,25 +22,28 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
   try {
     const hashedPassword = await hash(requestBody.password, 8)
 
-    const command = new PutCommand({
+    const params = {
       TableName: 'aws-dynamodb-users-table-use1-dev',
       Item: {
-        id: uuid(),
-        name: requestBody.name,
-        email: requestBody.email,
-        password: hashedPassword,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        id: { S: uuid() },
+        name: { S: requestBody.name },
+        email: { S: requestBody.email },
+        password: { S: hashedPassword },
+        created_at: { S: new Date().toISOString() },
+        updated_at: { S: new Date().toISOString() },
       },
-    })
+    }
 
-    const response = await docClient.send(command)
+    console.log('teste')
+    const response = ddb.putItem(params)
+
+    console.log(response)
 
     return {
       isBase64Encoded: false,
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(response),
+      body: JSON.stringify('User Created'),
     }
   } catch (err) {
     return {
