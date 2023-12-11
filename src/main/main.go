@@ -32,6 +32,7 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 	event := MyEvent{}
 	err := json.Unmarshal([]byte(request.Body), &event)
 	if err != nil {
+		log.Printf("PutItemInput: %+v\n", err)
 		return events.ALBTargetGroupResponse{
 			IsBase64Encoded: false,
 			StatusCode:      500,
@@ -79,6 +80,7 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 
 	output, err := svc.PutItem(input)
 	if err != nil {
+		log.Printf("PutItemInput: %+v\n", err)
 		return events.ALBTargetGroupResponse{
 			IsBase64Encoded: false,
 			StatusCode:      500,
@@ -99,6 +101,7 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 
 	responseBody, err := json.Marshal(responseData)
 	if err != nil {
+		log.Printf("PutItemInput: %+v\n", err)
 		return events.ALBTargetGroupResponse{
 			IsBase64Encoded: false,
 			StatusCode:      500,
