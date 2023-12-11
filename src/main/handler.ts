@@ -29,9 +29,12 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
       password: { S: hashedPassword },
     },
   }
+  console.log('AQUIIIIIIIIIIIIII!!!!!!!!!!! PARAMS')
+  console.log(params)
   try {
     const user = await dynamoDbService.send(new PutItemCommand(params))
-
+    console.log('AQUIIIIIIIIIIIIII!!!!!!!!!!!')
+    console.log(user)
     return {
       isBase64Encoded: false,
       statusCode: 200,
