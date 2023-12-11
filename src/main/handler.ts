@@ -20,7 +20,10 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
   try {
     const hashedPassword = await hash(requestBody.password, 8)
 
-    console.log(requestBody)
+    console.log(requestBody, 'Request Body')
+    console.log(requestBody.name, 'Name')
+    console.log(requestBody.email, 'Email')
+    console.log(requestBody.password, 'Password')
 
     const command = new PutCommand({
       TableName: 'aws-dynamodb-users-table-use1-dev',
@@ -32,7 +35,11 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
       },
     })
 
+    console.log(command, 'Command')
+
     const response = await docClient.send(command)
+
+    console.log(response, 'Response')
 
     return {
       isBase64Encoded: false,
