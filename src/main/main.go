@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -61,6 +62,8 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 			S: aws.String(event.UpdatedAt),
 		},
 	}
+
+	fmt.Println("Im Here!!!!!!!!")
 
 	input := &dynamodb.PutItemInput{
 		Item:         item,
