@@ -12,7 +12,7 @@ type LoadBalancerRequestEventInterface = {
 
 export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
   const client = new DynamoDBClient({ region: 'us-east-1' })
-  const docClient = DynamoDBDocumentClient.from(client)
+  // const docClient = DynamoDBDocumentClient.from(client)
   const requestBody: LoadBalancerRequestEventInterface = JSON.parse(
     event.body as string,
   )
@@ -37,15 +37,15 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
 
     console.log(command, 'Command')
 
-    const response = await docClient.send(command)
+    // const response = await docClient.send(command)
 
-    console.log(response, 'Response')
+    // console.log(response, 'Response')
 
     return {
       isBase64Encoded: false,
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(response),
+      body: JSON.stringify('Teste'),
     }
   } catch (err) {
     return {
