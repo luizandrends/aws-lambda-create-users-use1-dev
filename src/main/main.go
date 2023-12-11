@@ -1,31 +1,97 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"github.com/aws/aws-lambda-go/events"
-	"github.com/aws/aws-lambda-go/lambda"
+    "context"
+    "encoding/json"
+
+    "github.com/aws/aws-lambda-go/events"
+    "github.com/aws/aws-lambda-go/lambda"
+    "github.com/aws/aws-sdk-go/aws"
+    "github.com/aws/aws-sdk-go/aws/session"
+    "github.com/aws/aws-sdk-go/service/dynamodb"
+		"github.com/google/uuid"
 )
 
-func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	message := "Hello, World!"
+type MyEvent struct {
+    Name      string `json:"name"`
+    Email     string `json:"email"`
+    Password  string `json:"password"`
+    CreatedAt string `json:"created_at"`
+    UpdatedAt string `json:"updated_at"`
+}
 
-	fmt.Println(request)
-	fmt.Println("TESTE LUIZ ANDRE - 1")
-	fmt.Println("TESTE LUIZ ANDRE - 2")
+type ResponseData struct {
+    ID        string `json:"id"`
+    Name      string `json:"name"`
+    Email     string `json:"email"`
+    CreatedAt string `json:"created_at"`
+    UpdatedAt string `json:"updated_at"`
+}
 
-	response := events.APIGatewayProxyResponse{
-		IsBase64Encoded: false,
-		StatusCode:      200,
-		Headers: map[string]string{
-			"Content-Type": "application/json",
-		},
-		Body: message,
-	}
+func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (events.ALBTargetGroupResponse, error) {
+    event := MyEvent{}
+    err := json.Unmarshal([]byte(request.Body), &event)
+    if err != nil {
+        return events.ALBTargetGroupResponse{StatusCode: 400, StatusDescription: "400 Bad Request", Body: "Invalid request body"}, nil
+    }
 
-	return response, nil
+    sess := session.Must(session.NewSession(&aws.Config{
+        Region: aws.String("us-east-1"),
+    }))
+
+    svc := dynamodb.New(sess)
+
+    item := map[string]*dynamodb.AttributeValue{
+        "ID": {
+            S: uuid.New().String(),
+        },
+        "Name": {
+            S: aws.String(event.Name),
+        },
+        "Email": {
+            S: aws.String(event.Email),
+        },
+        "Password": {
+            S: aws.String(event.Password),
+        },
+        "CreatedAt": {
+            S: aws.String(event.CreatedAt),
+        },
+        "UpdatedAt": {
+            S: aws.String(event.UpdatedAt),
+        },
+    }
+
+    input := &dynamodb.PutItemInput{
+        Item:      item,
+        TableName: aws.String("aws-dynamodb-users-table-use1-dev"),
+    }
+
+    _, err = svc.PutItem(input)
+    if err != nil {
+        return events.ALBTargetGroupResponse{StatusCode: 500, StatusDescription: "500 Internal Server Error", Body: "Failed to create item in DynamoDB"}, nil
+    }
+
+    responseData := ResponseData{
+        ID:        event.ID,
+        Name:      event.Name,
+        Email:     event.Email,
+        CreatedAt: event.CreatedAt,
+        UpdatedAt: event.UpdatedAt,
+    }
+
+    responseBody, err := json.Marshal(responseData)
+    if err != nil {
+        return events.ALBTargetGroupResponse{StatusCode: 500, StatusDescription: "500 Internal Server Error", Body: "Failed to create response body"}, nil
+    }
+
+    return events.ALBTargetGroupResponse{
+        StatusCode:        200,
+        StatusDescription: "200 OK",
+        Body:              string(responseBody),
+    }, nil
 }
 
 func main() {
-	lambda.Start(handleRequest)
+    lambda.Start(HandleRequest)
 }
