@@ -32,7 +32,13 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 	event := MyEvent{}
 	err := json.Unmarshal([]byte(request.Body), &event)
 	if err != nil {
-		return events.ALBTargetGroupResponse{StatusCode: 400, StatusDescription: "400 Bad Request", Body: "Invalid request body"}, nil
+		return events.ALBTargetGroupResponse{
+			StatusCode:        500,
+			StatusDescription: "500 Internal Server Error",
+			Headers:           map[string]string{"Content-Type": "application/json"},
+			Body:              "Failed to create response body",
+			IsBase64Encoded:   false,
+		}, nil
 	}
 
 	sess := session.Must(session.NewSession(&aws.Config{
