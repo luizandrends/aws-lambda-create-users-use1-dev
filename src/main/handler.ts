@@ -38,9 +38,9 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
     }
   } catch (err) {
     console.log(err)
-    console.log('teste')
+    console.log('teste1')
     console.log('teste2')
-    console.log('teste2')
+    console.log('teste3')
     return {
       isBase64Encoded: false,
       statusCode: 500,
