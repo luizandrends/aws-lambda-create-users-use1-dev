@@ -95,6 +95,8 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 		UpdatedAt: *output.Attributes["UpdatedAt"].S,
 	}
 
+	log.Printf("Testando response data!!!!!!!!")
+
 	responseBody, err := json.Marshal(responseData)
 	if err != nil {
 		return events.ALBTargetGroupResponse{
@@ -104,6 +106,8 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 			Body:            "Failed to create response body",
 		}, nil
 	}
+
+	log.Printf("Testando response body!!!!!!!!")
 
 	return events.ALBTargetGroupResponse{
 		IsBase64Encoded: false,
