@@ -19,6 +19,9 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
     event.body as string,
   )
 
+  const creationDate = new Date().toISOString()
+  const toStringDate = creationDate.toString()
+
   try {
     const hashedPassword = await hash(requestBody.password, 8)
 
@@ -29,12 +32,11 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
         name: { S: requestBody.name },
         email: { S: requestBody.email },
         password: { S: hashedPassword },
-        created_at: { S: new Date().toISOString() },
-        updated_at: { S: new Date().toISOString() },
+        created_at: { S: toStringDate },
+        updated_at: { S: toStringDate },
       },
     }
 
-    console.log('teste')
     const response = ddb.putItem(params)
 
     console.log(response)
