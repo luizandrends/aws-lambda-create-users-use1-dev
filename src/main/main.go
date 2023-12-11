@@ -50,22 +50,22 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 	currentTime := time.Now().UTC().Format(time.RFC3339)
 
 	item := map[string]*dynamodb.AttributeValue{
-		"ID": {
+		"id": {
 			S: aws.String(uuid.New().String()),
 		},
-		"Name": {
+		"name": {
 			S: aws.String(event.Name),
 		},
-		"Email": {
+		"email": {
 			S: aws.String(event.Email),
 		},
-		"Password": {
+		"password": {
 			S: aws.String(event.Password),
 		},
-		"CreatedAt": {
+		"created_at": {
 			S: aws.String(currentTime),
 		},
-		"UpdatedAt": {
+		"updated_at": {
 			S: aws.String(currentTime),
 		},
 	}
