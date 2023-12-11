@@ -55,7 +55,7 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
       isBase64Encoded: false,
       statusCode: 500,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify("{'message': 'Internal Server Error'}"),
+      body: JSON.stringify(err),
     }
   }
 }
