@@ -1,7 +1,7 @@
 import { ALBEvent, ALBResult } from 'aws-lambda'
 import { PutItemCommand, DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { v4 as uuidv4 } from 'uuid'
 import { hash } from 'bcryptjs'
+import { v4 as uuid } from 'uuid'
 
 type LoadBalancerRequestEventInterface = {
   name: string
@@ -21,7 +21,7 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
   const params = {
     TableName: 'aws-dynamodb-users-table-use1-dev',
     Item: {
-      id: { S: uuidv4() },
+      id: { S: uuid() },
       name: { S: requestBody.name },
       email: { S: requestBody.email },
       password: { S: hashedPassword },
