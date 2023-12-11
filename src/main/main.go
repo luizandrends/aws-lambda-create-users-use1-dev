@@ -33,11 +33,10 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 	err := json.Unmarshal([]byte(request.Body), &event)
 	if err != nil {
 		return events.ALBTargetGroupResponse{
-			StatusCode:        500,
-			StatusDescription: "500 Internal Server Error",
-			Headers:           map[string]string{"Content-Type": "application/json"},
-			Body:              "Failed to create response body",
-			IsBase64Encoded:   false,
+			IsBase64Encoded: false,
+			StatusCode:      500,
+			Headers:         map[string]string{"Content-Type": "application/json"},
+			Body:            "Failed to create event body",
 		}, nil
 	}
 
@@ -81,11 +80,10 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 	output, err := svc.PutItem(input)
 	if err != nil {
 		return events.ALBTargetGroupResponse{
-			StatusCode:        500,
-			StatusDescription: "500 Internal Server Error",
-			Headers:           map[string]string{"Content-Type": "application/json"},
-			Body:              "Failed to create response body",
-			IsBase64Encoded:   false,
+			IsBase64Encoded: false,
+			StatusCode:      500,
+			Headers:         map[string]string{"Content-Type": "application/json"},
+			Body:            "Failed to create the user in the database",
 		}, nil
 	}
 
@@ -100,20 +98,18 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 	responseBody, err := json.Marshal(responseData)
 	if err != nil {
 		return events.ALBTargetGroupResponse{
-			StatusCode:        500,
-			StatusDescription: "500 Internal Server Error",
-			Headers:           map[string]string{"Content-Type": "application/json"},
-			Body:              "Failed to create response body",
-			IsBase64Encoded:   false,
+			IsBase64Encoded: false,
+			StatusCode:      500,
+			Headers:         map[string]string{"Content-Type": "application/json"},
+			Body:            "Failed to create response body",
 		}, nil
 	}
 
 	return events.ALBTargetGroupResponse{
-		StatusCode:        200,
-		StatusDescription: "200 OK",
-		Headers:           map[string]string{"Content-Type": "application/json"},
-		Body:              string(responseBody),
-		IsBase64Encoded:   false,
+		IsBase64Encoded: false,
+		StatusCode:      200,
+		Headers:         map[string]string{"Content-Type": "application/json"},
+		Body:            string(responseBody),
 	}, nil
 }
 
