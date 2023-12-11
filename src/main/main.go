@@ -80,7 +80,7 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 
 	output, err := svc.PutItem(input)
 
-	fmt.Print("Check PutItem", output)
+	fmt.Print(output)
 
 	if err != nil {
 		return events.ALBTargetGroupResponse{
