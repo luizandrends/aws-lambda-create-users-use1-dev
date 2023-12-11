@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "ci": "npm install",
-    "build": "babel src --out-dir dist --extensions '.ts'"
+    "build": "babel src --out-dir dist --extensions '.ts'",
+    "dev:server": "ts-node-dev -r tsconfig-paths/register --inspect --ignore-watch node_modules --transpile-only src/main/handler.ts"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.470.0",
@@ -18,11 +19,14 @@
     "@babel/preset-typescript": "^7.23.3",
     "@types/aws-lambda": "^8.10.130",
     "@types/bcryptjs": "^2.4.6",
+    "@types/express": "^4.17.21",
     "@types/uuid": "^9.0.7",
     "aws-lambda": "^1.0.7",
     "babel-plugin-module-resolver": "^5.0.0",
     "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "bcryptjs": "^2.4.3",
+    "express": "^4.18.2",
+    "ts-node-dev": "^2.0.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
