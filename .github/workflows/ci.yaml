@@ -1,15 +1,15 @@
-name: Golang Lambda CI
+name: TypeScript Lambda CI
 
 on:
   pull_request:
     paths:
-      - "**/*.go"
+      - "**/*.ts"
 jobs:
-  golang-lambda-ci:
+  typescript-lambda-ci:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: [1.21.5]
+        node-version: [20.x]
     permissions:
       id-token: write
       contents: read
@@ -21,13 +21,16 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           aws-region: us-east-1
-      - name: Golang Install
-        uses: actions/setup-go@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          go-version: ${{ matrix.go-version }}
-      - name: Build Golang Binary
-        run: |
-          cd src/main && go get && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build && zip ../../lambda_code.zip main
+          node-version: ${{ matrix.node-version }}
+      - name: Install Dependencies
+        run:  npm ci
+      - name: Build TypeScript
+        run: npm run build
+      - name: Zip the build
+        run: zip -r ./lambda_code.zip ./dist
       - name: s3 Lambda Artifact Creation
         run: |
           aws s3 cp ./lambda_code.zip s3://aws-s3-lambda-artifacts-use1-dev-dkkpwua/artifacts/lambda/${{ github.event.repository.name }}/
