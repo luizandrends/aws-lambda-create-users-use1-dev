@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"log"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -63,13 +63,13 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 		},
 	}
 
-	fmt.Println("Im Here!!!!!!!!")
-
 	input := &dynamodb.PutItemInput{
 		Item:         item,
 		TableName:    aws.String("aws-dynamodb-users-table-use1-dev"),
 		ReturnValues: aws.String("ALL_NEW"),
 	}
+
+	log.Printf("PutItemInput: %+v\n", input)
 
 	output, err := svc.PutItem(input)
 	if err != nil {
@@ -86,13 +86,21 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 
 	responseBody, err := json.Marshal(responseData)
 	if err != nil {
-		return events.ALBTargetGroupResponse{StatusCode: 500, StatusDescription: "500 Internal Server Error", Body: "Failed to create response body"}, nil
+		return events.ALBTargetGroupResponse{
+			StatusCode:        500,
+			StatusDescription: "500 Internal Server Error",
+			Headers:           map[string]string{"Content-Type": "application/json"},
+			Body:              "Failed to create response body",
+			IsBase64Encoded:   false,
+		}, nil
 	}
 
 	return events.ALBTargetGroupResponse{
 		StatusCode:        200,
 		StatusDescription: "200 OK",
+		Headers:           map[string]string{"Content-Type": "application/json"},
 		Body:              string(responseBody),
+		IsBase64Encoded:   false,
 	}, nil
 }
 
