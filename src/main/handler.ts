@@ -31,23 +31,11 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
   }
   console.log('AQUIIIIIIIIIIIIII!!!!!!!!!!! PARAMS')
   console.log(params)
-  try {
-    const { $metadata } = await dynamoDbService.send(new PutItemCommand(params))
-    console.log('AQUIIIIIIIIIIIIII!!!!!!!!!!!')
-    console.log($metadata)
-    return {
-      isBase64Encoded: false,
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify($metadata),
-    }
-  } catch (err) {
-    console.log(err)
-    return {
-      isBase64Encoded: false,
-      statusCode: 500,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: 'Internal server error' }),
-    }
+  const { $metadata } = await dynamoDbService.send(new PutItemCommand(params))
+  return {
+    isBase64Encoded: false,
+    statusCode: 200,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify($metadata),
   }
 }
