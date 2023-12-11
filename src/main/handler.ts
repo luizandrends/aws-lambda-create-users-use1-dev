@@ -17,9 +17,6 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
   )
 
   const hashedPassword = await hash(requestBody.password, 8)
-
-  console.log(hashedPassword)
-
   const params = {
     TableName: 'aws-dynamodb-users-table-use1-dev',
     Item: {
@@ -29,13 +26,12 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
       password: { S: hashedPassword },
     },
   }
-  console.log('AQUIIIIIIIIIIIIII!!!!!!!!!!! PARAMS')
-  console.log(params)
-  const { $metadata } = await dynamoDbService.send(new PutItemCommand(params))
+  await dynamoDbService.send(new PutItemCommand(params))
+
   return {
     isBase64Encoded: false,
     statusCode: 200,
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify($metadata),
+    body: JSON.stringify("{'message': 'User created successfully'}"),
   }
 }
