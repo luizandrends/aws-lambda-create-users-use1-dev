@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -14,11 +15,9 @@ import (
 )
 
 type MyEvent struct {
-	Name      string `json:"name"`
-	Email     string `json:"email"`
-	Password  string `json:"password"`
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type ResponseData struct {
@@ -42,6 +41,8 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 
 	svc := dynamodb.New(sess)
 
+	currentTime := time.Now().UTC().Format(time.RFC3339)
+
 	item := map[string]*dynamodb.AttributeValue{
 		"ID": {
 			S: aws.String(uuid.New().String()),
@@ -56,10 +57,10 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 			S: aws.String(event.Password),
 		},
 		"CreatedAt": {
-			S: aws.String(event.CreatedAt),
+			S: aws.String(currentTime),
 		},
 		"UpdatedAt": {
-			S: aws.String(event.UpdatedAt),
+			S: aws.String(currentTime),
 		},
 	}
 
