@@ -73,7 +73,13 @@ func HandleRequest(ctx context.Context, request events.ALBTargetGroupRequest) (e
 
 	output, err := svc.PutItem(input)
 	if err != nil {
-		return events.ALBTargetGroupResponse{StatusCode: 500, StatusDescription: "500 Internal Server Error", Body: "Failed to create item in DynamoDB"}, nil
+		return events.ALBTargetGroupResponse{
+			StatusCode:        500,
+			StatusDescription: "500 Internal Server Error",
+			Headers:           map[string]string{"Content-Type": "application/json"},
+			Body:              "Failed to create response body",
+			IsBase64Encoded:   false,
+		}, nil
 	}
 
 	responseData := ResponseData{
