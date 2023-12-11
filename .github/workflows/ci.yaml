@@ -29,6 +29,8 @@ jobs:
         run: npm install
       - name: Build TypeScript
         run: npm run build
+      - name: Move Dependencies
+        run: mv node_modules ./dist
       - name: Zip the build
         run: zip -r ./lambda_code.zip ./dist
       - name: s3 Lambda Artifact Creation
