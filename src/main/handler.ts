@@ -44,7 +44,14 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
 
   const findUserByEmailParams = {
     TableName: tableName,
-    Key: { email: { S: email } },
+    Key: {
+      id: id,
+      name: name,
+      email: email,
+      password: hashedPassword,
+      created_at: createdAt,
+      updated_at: updatedAt,
+    },
   }
 
   try {
