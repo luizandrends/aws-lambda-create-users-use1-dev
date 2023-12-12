@@ -41,6 +41,19 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
     }
   }
 
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$/
+  if (!passwordRegex.test(password)) {
+    return {
+      statusCode: 400,
+      statusDescription: '400 Bad Request',
+      body: JSON.stringify({
+        message:
+          'Password must contain at least 8 characters, one uppercase letter, one number, and one special character',
+      }),
+      isBase64Encoded: false,
+    }
+  }
+
   const id = uuidv4()
   const createdAt = new Date().toISOString()
   const updatedAt = createdAt
