@@ -4,7 +4,11 @@ import { v4 as uuidv4 } from 'uuid'
 import bcrypt from 'bcrypt'
 
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { DynamoDBDocument, PutCommand, GetCommand } from '@aws-sdk/lib-dynamodb'
+import {
+  DynamoDBDocument,
+  PutCommand,
+  QueryCommand,
+} from '@aws-sdk/lib-dynamodb'
 
 const tableName = 'aws-dynamodb-users-table-use1-dev'
 
@@ -42,15 +46,18 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
   const updatedAt = createdAt
   const hashedPassword = await bcrypt.hash(password, 10)
 
-  const findUserByEmailParams = {
+  const queryEmailParams = {
     TableName: tableName,
-    Key: { id, email },
+    IndexName: 'EmailIndex',
+    KeyConditionExpression: 'email = :email',
+    ExpressionAttributeValues: {
+      ':email': email,
+    },
   }
 
   try {
-    const { Item } = await client.send(new GetCommand(findUserByEmailParams))
-    console.log(Item)
-    if (Item) {
+    const { Items } = await client.send(new QueryCommand(queryEmailParams))
+    if (Items && Items.length > 0) {
       return {
         statusCode: 400,
         statusDescription: '400 Bad Request',
