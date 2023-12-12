@@ -59,6 +59,7 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
       }
     }
   } catch (error) {
+    console.log('Error with GetCommand:', error)
     return {
       statusCode: 500,
       statusDescription: '500 Internal Server Error',
