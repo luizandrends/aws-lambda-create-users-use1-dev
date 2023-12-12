@@ -8,7 +8,7 @@ import { DynamoDBDocument, PutCommand } from '@aws-sdk/lib-dynamodb'
 
 const tableName = 'aws-dynamodb-users-table-use1-dev'
 
-const dynamoDbClient = new DynamoDBClient({ region: 'us-west-2' })
+const dynamoDbClient = new DynamoDBClient({ region: 'us-east-1' })
 const client = DynamoDBDocument.from(dynamoDbClient)
 
 export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
