@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt'
 const tableName = 'aws-dynamodb-users-table-use1-dev'
 const client = new DynamoDBClient({ region: 'us-east-1' })
 
-export const handler = async (event: ALBEvent): Promise<ALBResult> => {
+export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
   const { name, email, password } = JSON.parse(event.body || '{}')
 
   if (!name || !email || !password) {
