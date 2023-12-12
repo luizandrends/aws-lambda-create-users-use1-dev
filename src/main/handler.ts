@@ -61,7 +61,7 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
       return {
         statusCode: 400,
         statusDescription: '400 Bad Request',
-        body: JSON.stringify({ message: 'email already exists' }),
+        body: JSON.stringify({ message: 'Incorrect email or password' }),
         isBase64Encoded: false,
       }
     }
