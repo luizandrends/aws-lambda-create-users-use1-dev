@@ -40,7 +40,7 @@ export const handleRequest = async (
     },
   }
 
-  client
+  return client
     .send(new PutCommand(params))
     .then(() => {
       console.log('PutCommand successful')
