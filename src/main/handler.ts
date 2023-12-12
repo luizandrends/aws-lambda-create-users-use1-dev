@@ -49,7 +49,7 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
 
   try {
     const { Item } = await client.send(new GetCommand(findUserByEmailParams))
-
+    console.log(Item)
     if (Item) {
       return {
         statusCode: 400,
