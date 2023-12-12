@@ -1,4 +1,4 @@
-name: Golang Lambda CI
+name: Typescript Lambda CI
 
 on:
   push:
