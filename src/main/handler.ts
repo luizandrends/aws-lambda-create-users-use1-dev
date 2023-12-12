@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import bcrypt from 'bcrypt'
 
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { DynamoDBDocument, PutCommand } from '@aws-sdk/lib-dynamodb'
+import { DynamoDBDocument, PutCommand, GetCommand } from '@aws-sdk/lib-dynamodb'
 
 const tableName = 'aws-dynamodb-users-table-use1-dev'
 
@@ -25,12 +25,49 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
     }
   }
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email)) {
+    return {
+      statusCode: 400,
+      statusDescription: '400 Bad Request',
+      body: JSON.stringify({
+        message: 'Invalid email format',
+      }),
+      isBase64Encoded: false,
+    }
+  }
+
   const id = uuidv4()
   const createdAt = new Date().toISOString()
   const updatedAt = createdAt
   const hashedPassword = await bcrypt.hash(password, 10)
 
-  const params = {
+  const findUserByEmailParams = {
+    TableName: tableName,
+    Key: { email },
+  }
+
+  try {
+    const { Item } = await client.send(new GetCommand(findUserByEmailParams))
+
+    if (Item) {
+      return {
+        statusCode: 400,
+        statusDescription: '400 Bad Request',
+        body: JSON.stringify({ message: 'email already exists' }),
+        isBase64Encoded: false,
+      }
+    }
+  } catch (error) {
+    return {
+      statusCode: 500,
+      statusDescription: '500 Internal Server Error',
+      body: JSON.stringify({ message: 'Internal Server Error' }),
+      isBase64Encoded: false,
+    }
+  }
+
+  const createUserParams = {
     TableName: tableName,
     Item: {
       id: id,
@@ -43,7 +80,7 @@ export const handleRequest = async (event: ALBEvent): Promise<ALBResult> => {
   }
 
   try {
-    await client.send(new PutCommand(params))
+    await client.send(new PutCommand(createUserParams))
     console.log('PutCommand successful')
     return {
       statusCode: 200,
